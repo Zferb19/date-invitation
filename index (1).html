@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Date Invitation</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat:wght@600;700&family=DM+Sans:wght@400;500;600&display=swap">
+<style>
+:root{--bg1:#FFE6EF;--bg2:#EBDDF9;--card:#FFFBFD;--ink:#3B1450;--muted:#7C5A8E;--rose:#D6336C;--on-rose:#fff;--purple:#7B3FA0;--line:#E8D3EE;--chip:#FBEFF5;color-scheme:light;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg1:#2A1038;--bg2:#190B2A;--card:#2C1744;--ink:#FBEFFA;--muted:#C9A9DB;--rose:#FF7FA8;--on-rose:#2A0F2E;--purple:#C79BF2;--line:#4A2B6B;--chip:#38205A;color-scheme:dark}}
+:root[data-theme="dark"]{--bg1:#2A1038;--bg2:#190B2A;--card:#2C1744;--ink:#FBEFFA;--muted:#C9A9DB;--rose:#FF7FA8;--on-rose:#2A0F2E;--purple:#C79BF2;--line:#4A2B6B;--chip:#38205A;color-scheme:dark}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;min-height:100%;display:flex;align-items:center;justify-content:center;padding:22px 16px;background:linear-gradient(160deg,var(--bg1),var(--bg2));color:var(--ink);font:16px/1.5 "DM Sans",system-ui,-apple-system,"Segoe UI",sans-serif;overflow-x:hidden}
+#fl{position:fixed;inset:0;pointer-events:none;overflow:hidden}
+#fl span{position:absolute;bottom:-40px;opacity:.5}
+@media (prefers-reduced-motion:no-preference){#fl span{animation:up linear infinite}@keyframes up{to{transform:translateY(-115vh) rotate(25deg)}}}
+@media (prefers-reduced-motion:reduce){#fl{display:none}}
+main{position:relative;width:100%;max-width:420px}
+.card{background:var(--card);border-radius:22px;border-top:6px solid var(--rose);padding:28px 22px;text-align:center;box-shadow:0 18px 40px rgba(123,63,160,.18)}
+.eyebrow{margin:0 0 4px;color:var(--rose);font-weight:600;font-size:.9rem}
+h1,h2{font:700 2.1rem/1.1 Caveat,"Segoe Script",cursive;margin:0 0 14px;color:var(--ink)}
+.sub{margin:0 0 20px;color:var(--muted)}
+.heart{font-size:3.4rem;line-height:1;margin-bottom:8px;color:var(--rose)}
+@media (prefers-reduced-motion:no-preference){.heart{animation:beat 1.6s ease-in-out infinite}@keyframes beat{50%{transform:scale(1.12)}}}
+input[type=text],input[type=date],input[type=time],textarea{width:100%;font:inherit;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:12px;text-align:left}
+textarea{min-height:80px;resize:vertical}
+:focus-visible{outline:3px solid var(--purple);outline-offset:2px}
+.btn{font:inherit;font-weight:600;width:100%;padding:13px 18px;margin-top:16px;border-radius:999px;border:1px solid var(--rose);background:var(--rose);color:var(--on-rose);cursor:pointer;text-decoration:none;display:block}
+.btn[disabled]{opacity:.45;cursor:not-allowed}
+.btn.ghost{background:transparent;color:var(--rose)}
+.pair{position:relative;height:64px;margin-top:6px}
+.pair .btn{position:absolute;width:calc(50% - 6px);top:0;transition:transform .25s,width .25s}
+.pair #no{right:0;transform-origin:right center;background:transparent;color:var(--purple);border-color:var(--purple)}
+.pair #yes{left:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;justify-content:center;margin:10px 0}
+.chip{font:inherit;font-size:.92rem;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:999px;padding:8px 14px;cursor:pointer}
+.chip[aria-pressed=true]{background:var(--purple);border-color:var(--purple);color:var(--card);font-weight:600}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:10px}
+.lab{display:block;text-align:left;font-weight:600;margin:14px 0 6px;font-size:.92rem}
+.places{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.pl{font:inherit;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:14px;padding:12px 8px;cursor:pointer;min-height:84px}
+.pl b{display:block;font-size:1.5rem;font-weight:400}
+.pl small{display:block;color:var(--muted);font-size:.74rem;line-height:1.25}
+.pl[aria-pressed=true]{border:2px solid var(--rose);background:var(--card);font-weight:600}
+.pl[aria-disabled=true]{opacity:.4}
+.count{margin:12px 0 0;color:var(--muted);font-size:.9rem}.sub-box{margin-top:16px;text-align:left}.sub-box .lab{margin:0 0 8px}.opts{display:grid;gap:8px}.opt{font:inherit;text-align:left;color:var(--ink);background:var(--chip);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}.opt small{display:block;color:var(--muted);font-size:.8rem;font-weight:400}.opt[aria-pressed=true]{border:2px solid var(--rose);background:var(--card);font-weight:600}
+.gifts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.gift{background:var(--chip);border:1px solid var(--line);border-radius:16px;padding:14px 8px;font:inherit;color:var(--ink);min-height:150px}
+.gift .pic{display:grid;place-items:center;height:84px;margin-bottom:8px;border-radius:12px;border:2px dashed var(--line);font-size:2.2rem}
+.gift small{display:block;color:var(--muted);font-size:.78rem}
+button.gift{cursor:pointer}
+@media (prefers-reduced-motion:no-preference){.shake{animation:sh .4s}@keyframes sh{25%{transform:rotate(-4deg)}75%{transform:rotate(4deg)}}}
+.ticket{background:#fff;color:#3B1450;border-radius:18px;border-top:6px solid #D6336C;padding:24px 22px;text-align:left;box-shadow:0 18px 40px rgba(123,63,160,.2)}
+.t-head{display:flex;justify-content:space-between;align-items:center;gap:12px}
+.t-head p{margin:0;color:#D6336C;font-weight:600;font-size:.85rem}
+.t-head h2{color:#3B1450;margin:0;font-size:2.2rem}
+.stamp{flex:none;width:54px;height:54px;border-radius:50%;border:2px dashed #D6336C;display:grid;place-items:center;color:#D6336C;font-size:1.5rem}
+.t-rule{border:0;border-top:2px dashed #E2CDEA;margin:16px 0}
+.t-row{margin:0 0 14px}
+.t-row span{display:block;color:#8A6A9B;font-size:.82rem}
+.t-row b{display:block;font:700 1.35rem/1.25 Caveat,"Segoe Script",cursive;color:#3B1450;overflow-wrap:anywhere}
+.t-quote{margin:0;padding:12px 14px;border-radius:12px;background:#FFF0F5;font:600 1.15rem/1.3 Caveat,cursive;color:#7B3FA0}
+.t-foot{margin:14px 0 0;text-align:center;font:600 1.25rem Caveat,cursive;color:#3B1450}
+.acts{margin-top:16px}
+.status{min-height:1.4em;margin:10px 0 0;text-align:center;color:var(--muted);font-size:.9rem}
+</style>
+</head>
+<body>
+<div id="fl" aria-hidden="true"></div>
+<main>
+  <section class="card" data-s="1">
+    <div class="heart" aria-hidden="true">♥</div>
+    <p class="eyebrow">A special invitation</p>
+    <h2>Would you like to go on a first date with me?</h2>
+    <p class="sub">A date we plan together.</p>
+    <div class="pair"><button class="btn" id="yes" type="button">Yes!</button><button class="btn" id="no" type="button">Let me think…</button></div>
+  </section>
+
+  <section class="card" data-s="2" hidden>
+    <p class="eyebrow">Step 1 of 7</p>
+    <h2>When are you free?</h2>
+    <label class="lab" for="date">Date</label>
+    <input type="date" id="date">
+    <div class="chips" id="parts" role="group" aria-label="Time of day"></div>
+    <div class="row2"><div><label class="lab" for="time">From</label><input type="time" id="time"></div><div><label class="lab" for="time2">Until</label><input type="time" id="time2"></div></div>
+    <p class="count" id="tHint" role="status" aria-live="polite"></p>
+    <button class="btn" id="n2" type="button" disabled>Next</button>
+  </section>
+
+  <section class="card" data-s="3" hidden>
+    <p class="eyebrow">Step 2 of 7</p>
+    <h2>Where shall we go?</h2>
+    <p class="sub">Pick up to 3 places.</p>
+    <div class="places" id="places"></div>
+    <div id="subs"></div>
+    <p class="count" id="count" role="status" aria-live="polite"></p>
+    <button class="btn" id="n3" type="button" disabled>Next</button>
+  </section>
+
+  <section class="card" data-s="3a" hidden>
+    <p class="eyebrow">Step 3 of 7</p>
+    <h2>How are we getting there?</h2>
+    <div class="opts" id="trans" role="group" aria-label="Transport"></div>
+    <button class="btn" id="n3a" type="button" disabled>Next</button>
+  </section>
+
+  <section class="card" data-s="3b" hidden>
+    <p class="eyebrow">Step 4 of 7</p>
+    <h2>Shall I pick you up?</h2>
+    <div class="opts" id="pick" role="group" aria-label="Pick-up"></div>
+    <button class="btn" id="n3b" type="button" disabled>Next</button>
+  </section>
+
+  <section class="card" data-s="4" hidden>
+    <p class="eyebrow">Step 5 of 7</p>
+    <h2>Dress code</h2>
+    <div class="chips" id="dress" role="group" aria-label="Dress code"></div>
+    <button class="btn" id="n4" type="button">Next</button>
+  </section>
+
+  <section class="card" data-s="4b" hidden>
+    <p class="eyebrow">Step 6 of 7</p>
+    <h2>A message for Zul</h2>
+    <label class="lab" for="msg">Anything you’d like to tell him? (optional)</label>
+    <textarea id="msg" maxlength="140"></textarea>
+    <button class="btn" id="n4b" type="button">Next</button>
+  </section>
+
+  <section class="card" data-s="5" hidden>
+    <p class="eyebrow">Step 7 of 7</p>
+    <h2>A surprise is waiting</h2>
+    <p class="sub">Zul prepared two things for you.</p>
+    <div class="gifts">
+      <div class="gift"><div class="pic" aria-hidden="true">🧣</div><b>Scarf</b></div>
+      <button class="gift" id="mys" type="button"><div class="pic" aria-hidden="true">❓</div><b>Mystery gift</b><small id="mysT">Tap to peek</small></button>
+    </div>
+    <button class="btn" id="n5" type="button">Make my receipt</button>
+  </section>
+
+  <section data-s="6" hidden>
+    <div class="ticket" id="ticket">
+      <div class="t-head"><div><p>ADMIT TWO</p><h2>Date Invitation</h2></div><div class="stamp" aria-hidden="true">♥</div></div>
+      <hr class="t-rule">
+      <p class="t-row"><span>For</span><b id="tN"></b></p>
+      <p class="t-row"><span>When</span><b id="tW"></b></p>
+      <p class="t-row"><span>Where</span><b id="tP"></b></p>
+      <p class="t-row"><span>Getting there</span><b id="tT"></b></p>
+      <p class="t-row"><span>Pick-up</span><b id="tU"></b></p>
+      <p class="t-row"><span>Dress code</span><b id="tD"></b></p>
+      <p class="t-row"><span>Gifts from Zul</span><b>Scarf + 1 mystery gift</b></p>
+      <p class="t-row" id="tMr"><span>Message for Zul</span><b id="tM"></b></p>
+      <p class="t-quote">Would you like to go on a first date with me?</p>
+      <p class="t-foot">From Zul ♥</p>
+    </div>
+    <div class="acts">
+      <p class="status">Download your receipt and send it to Zul ♥</p>
+      <button class="btn" id="pdf" type="button">Download PDF</button>
+      
+      <p class="status" id="st" role="status" aria-live="polite"></p>
+    </div>
+  </section>
+</main>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+(function(){
+  var HOST='Zul',GUEST='Nur Elisya Irdina binti Mohd Jamil';
+  var PARTS=[['Morning','10:00','13:00'],['Afternoon','13:00','17:00'],['Evening','17:00','20:00'],['Night','20:00','23:00']];
+  var PLACES=[['☕','Café'],['📸','Photobooth'],['🎬','Movie'],['🕯️','Cipta Karya','Make your own candle & clay pieces'],['🎨','Art BnB Workshop'],['🛋️','Plan B'],['🛍️','Ipoh Stable Market'],['❄️','Sentra Ice World'],['🪞','Mirror Maze']];
+  var DRESS=['Casual','Smart','Soft colours','Anything goes'];
+  var S;function fresh(){S={name:GUEST,date:'',part:'',time:'',time2:'',places:[],sub:{},transport:'',pickup:'',dress:'',msg:''};}fresh();
+  function $(i){return document.getElementById(i);}
+  function all(q){return Array.prototype.slice.call(document.querySelectorAll(q));}
+  function go(n){all('[data-s]').forEach(function(e){e.hidden=e.getAttribute('data-s')!==String(n);});window.scrollTo(0,0);if(n===6)ticket();}
+  function names(){all('.nm').forEach(function(e){e.textContent=S.name;});}
+
+  var f=$('fl');
+  for(var i=0;i<10;i++){var s=document.createElement('span');s.textContent=i%2?'♥':'❀';s.style.left=(5+i*10)+'%';s.style.fontSize=(14+(i%4)*8)+'px';s.style.color=i%3?'#D6336C':'#9B5BC4';s.style.animationDuration=(12+(i%5)*3)+'s';s.style.animationDelay=(-i*2)+'s';f.appendChild(s);}
+
+
+  var tries=0,no=$('no'),yes=$('yes');
+  no.addEventListener('click',function(){
+    tries++;
+    if(tries>=4){no.style.display='none';yes.style.width='100%';return;}
+    no.style.transform='scale('+(1-tries*0.25)+')';
+    yes.style.width='calc('+(50+tries*8)+'% - 6px)';
+  });
+  $('yes').addEventListener('click',function(){go(2);});
+
+  var d=$('date'),t=$('time'),t2=$('time2'),now=new Date();
+  d.min=now.getFullYear()+'-'+String(now.getMonth()+1).padStart(2,'0')+'-'+String(now.getDate()).padStart(2,'0');
+  function chk2(){var bad=S.time&&S.time2&&S.time2<=S.time;$('tHint').textContent=bad?'The end time must be after the start time.':'';$('n2').disabled=!(S.date&&S.time&&S.time2&&!bad);}
+  function drawParts(){
+    var b=$('parts');b.textContent='';
+    PARTS.forEach(function(p){
+      var c=document.createElement('button');c.type='button';c.className='chip';c.textContent=p[0];
+      c.setAttribute('aria-pressed',S.part===p[0]?'true':'false');
+      c.addEventListener('click',function(){S.part=p[0];S.time=p[1];S.time2=p[2];t.value=p[1];t2.value=p[2];drawParts();chk2();});
+      b.appendChild(c);
+    });
+  }
+  d.addEventListener('input',function(e){S.date=e.target.value;chk2();});
+  t.addEventListener('input',function(e){S.time=e.target.value;S.part='';drawParts();chk2();});
+  t2.addEventListener('input',function(e){S.time2=e.target.value;S.part='';drawParts();chk2();});
+  drawParts();
+  $('n2').addEventListener('click',function(){go(3);});
+
+  var SUBS={
+    'Café':['Which café?',[['SOL Ipoh','Vintage and cosy'],['Meet Coffee Roastery','Minimalist, own-roasted coffee'],['Kalma Brew x Souv','Soufflé pancakes · evenings'],['Coffee CAMP 612','Camping vibe, Muslim-friendly · evenings'],['Suito Café','Camping-chair vibe, very cute · evenings'],['Back to Begin','Cute vegetarian café · daytime'],['Dose Coffee Signature','Cosy, indoor and outdoor seats · evenings'],['Coco Craft Bakehouse','Pretty pastries and desserts'],['Asow Eatery Station','Café inside a plant nursery'],['Hillrise Coffee 16','Vintage secret-garden house']]],
+    'Movie':['Which cinema?',[['GSC Ipoh Parade','Ipoh Parade'],['TGV Sentra Mall','Klebang'],['TGV AEON Kinta City','Kinta City'],['TGV AEON Station 18','Station 18']]],
+    'Photobooth':['Which photobooth?',[['Plan B',''],['Ipoh Parade',''],['Lime Shop','']]]
+  };
+  function placeStr(){return S.places.map(function(p){return S.sub[p]?p+': '+S.sub[p]:p;});}
+  function drawSubs(){
+    var box=$('subs');box.textContent='';
+    S.places.forEach(function(pl){
+      var cfg=SUBS[pl];if(!cfg)return;
+      var w=document.createElement('div');w.className='sub-box';
+      var l=document.createElement('span');l.className='lab';l.textContent=cfg[0]+' (choose 1)';w.appendChild(l);
+      var g=document.createElement('div');g.className='opts';
+      cfg[1].forEach(function(o){
+        var b=document.createElement('button');b.type='button';b.className='opt';
+        b.setAttribute('aria-pressed',S.sub[pl]===o[0]?'true':'false');
+        b.innerHTML='<span></span><small></small>';b.children[0].textContent=o[0];b.children[1].textContent=o[1];
+        if(!o[1])b.removeChild(b.children[1]);
+        b.addEventListener('click',function(){S.sub[pl]=S.sub[pl]===o[0]?'':o[0];drawSubs();});
+        g.appendChild(b);
+      });
+      w.appendChild(g);box.appendChild(w);
+    });
+  }
+  function drawPlaces(){
+    var b=$('places');b.textContent='';
+    PLACES.forEach(function(p){
+      var n=p[1],on=S.places.indexOf(n)>-1,full=S.places.length>=3&&!on;
+      var c=document.createElement('button');c.type='button';c.className='pl';
+      c.setAttribute('aria-pressed',on?'true':'false');
+      if(full)c.setAttribute('aria-disabled','true');
+      c.innerHTML='<b></b><span></span><small></small>';
+      c.children[0].textContent=p[0];c.children[1].textContent=n;c.children[2].textContent=p[2]||'';
+      c.addEventListener('click',function(){
+        if(on){S.places.splice(S.places.indexOf(n),1);delete S.sub[n];}
+        else if(!full)S.places.push(n);
+        else{$('count').textContent='Maximum 3 places. Tap one to remove it first.';return;}
+        drawPlaces();
+      });
+      b.appendChild(c);
+    });
+    $('count').textContent=S.places.length+' / 3 selected';
+    $('n3').disabled=!S.places.length;drawSubs();
+  }
+  drawPlaces();
+  $('n3').addEventListener('click',function(){go('3a');});
+  function choice(boxId,list,key,btn){
+    var box=$(boxId);box.textContent='';
+    list.forEach(function(o){
+      var b=document.createElement('button');b.type='button';b.className='opt';
+      b.setAttribute('aria-pressed',S[key]===o[1]?'true':'false');
+      b.textContent=(o[0]?o[0]+' ':'')+o[1];
+      b.addEventListener('click',function(){S[key]=o[1];choice(boxId,list,key,btn);});
+      box.appendChild(b);
+    });
+    $(btn).disabled=!S[key];
+  }
+  var TRANS=[['🚗','Car'],['🏍️','Motorcycle'],['🚕','Grab']];
+  var PICK=[['','Yes, please pick me up'],['','No, I’ll meet you there']];
+  function drawTrans(){choice('trans',TRANS,'transport','n3a');choice('pick',PICK,'pickup','n3b');}
+  drawTrans();
+  $('n3a').addEventListener('click',function(){go('3b');});
+  $('n3b').addEventListener('click',function(){go(4);});
+
+  function drawDress(){
+    var b=$('dress');b.textContent='';
+    DRESS.forEach(function(n){
+      var c=document.createElement('button');c.type='button';c.className='chip';c.textContent=n;
+      c.setAttribute('aria-pressed',S.dress===n?'true':'false');
+      c.addEventListener('click',function(){S.dress=S.dress===n?'':n;drawDress();});
+      b.appendChild(c);
+    });
+  }
+  drawDress();
+  $('n4').addEventListener('click',function(){go('4b');});
+  $('n4b').addEventListener('click',function(){S.msg=$('msg').value.trim();go(5);});
+
+  $('mys').addEventListener('click',function(){
+    var b=$('mys');b.classList.remove('shake');void b.offsetWidth;b.classList.add('shake');
+    $('mysT').textContent='Shhh… it’s a secret until the day 🤫';
+  });
+  $('n5').addEventListener('click',function(){go(6);});
+
+  function when(){
+    var x=new Date(S.date+'T00:00'),r=x.toLocaleDateString('en-GB',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+    function tm(v){var p=v.split(':');return new Date(2000,0,1,+p[0],+p[1]).toLocaleTimeString('en-US',{hour:'numeric',minute:'2-digit'});}
+    return r+', '+tm(S.time)+' to '+tm(S.time2);
+  }
+  function ticket(){
+    names();
+    $('tN').textContent=S.name;$('tW').textContent=when();
+    $('tP').textContent=placeStr().join(', ');$('tT').textContent=S.transport;$('tU').textContent=S.pickup;
+    $('tD').textContent=S.dress||'Anything goes';
+    $('tM').textContent=S.msg;$('tMr').hidden=!S.msg;
+  }
+  function st(x){$('st').textContent=x;}
+  function clean(x){return String(x).replace(/[’‘]/g,"'").replace(/[“”]/g,'"').replace(/[^\x20-\x7E\u00A0-\u00FF]/g,'');}
+
+  function makePdf(){
+    var J=window.jspdf.jsPDF,W=80,M=7,C=W/2,INK=[59,20,80],PINK=[214,51,108],GREY=[120,100,135];
+    function draw(p){
+      var y=12;
+      p.setFillColor(PINK[0],PINK[1],PINK[2]);p.circle(C-2.6,y+1.8,2.4,'F');p.circle(C+2.6,y+1.8,2.4,'F');p.triangle(C-4.8,y+2.8,C+4.8,y+2.8,C,y+8.4,'F');
+      y+=16;
+      p.setFont('courier','bold');p.setFontSize(15);p.setTextColor(INK[0],INK[1],INK[2]);p.text('DATE INVITATION',C,y,{align:'center'});
+      y+=6;p.setFontSize(9);p.setTextColor(PINK[0],PINK[1],PINK[2]);p.text('ADMIT TWO',C,y,{align:'center'});
+      y+=6;
+      function rule(){p.setDrawColor(160,140,170);p.setLineDashPattern([1.2,1.2],0);p.line(M,y,W-M,y);p.setLineDashPattern([],0);y+=6;}
+      function row(k,v){
+        p.setFont('courier','normal');p.setFontSize(8);p.setTextColor(GREY[0],GREY[1],GREY[2]);p.text(k.toUpperCase(),M,y);y+=4.2;
+        p.setFont('courier','bold');p.setFontSize(10);p.setTextColor(INK[0],INK[1],INK[2]);
+        var L=p.splitTextToSize(clean(v),W-2*M);p.text(L,M,y);y+=L.length*4.4+3.2;
+      }
+      rule();
+      row('For',S.name);row('When',when());row('Where',placeStr().join(', '));row('Getting there',S.transport);row('Pick-up',S.pickup);row('Dress code',S.dress||'Anything goes');row('Gifts from '+HOST,'Scarf + 1 mystery gift');
+      if(S.msg)row('Message for '+HOST,S.msg);
+      rule();
+      p.setFont('courier','bolditalic');p.setFontSize(10);p.setTextColor(123,63,160);
+      var q=p.splitTextToSize('Would you like to go on a first date with me?',W-2*M);p.text(q,C,y+1,{align:'center'});y+=q.length*4.6+4;
+      p.setFont('courier','normal');p.setFontSize(9);p.setTextColor(INK[0],INK[1],INK[2]);p.text('FROM '+HOST.toUpperCase(),C,y,{align:'center'});y+=7;
+      var sd=0,k,x=M+3,bar=true;for(k=0;k<S.name.length;k++)sd=(sd*31+S.name.charCodeAt(k))%9973;
+      p.setFillColor(INK[0],INK[1],INK[2]);
+      while(x<W-M-3){sd=(sd*1103+12345)%32768;var w=0.4+(sd%4)*0.4;if(x+w>W-M-3)break;if(bar)p.rect(x,y,w,9,'F');x+=w;bar=!bar;}
+      y+=14;
+      p.setFont('courier','normal');p.setFontSize(7);p.setTextColor(GREY[0],GREY[1],GREY[2]);p.text('THANK YOU',C,y,{align:'center'});
+      return y+8;
+    }
+    var h=draw(new J({unit:'mm',format:[W,400]}));
+    var p=new J({unit:'mm',format:[W,h]});draw(p);
+    return p.output('blob');
+  }
+  function plainSave(blob){try{var u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='tiket-date.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u);},4000);st('PDF saved.');}catch(e){st('Download failed. Please try again.');}}
+  $('pdf').addEventListener('click',function(){
+    var blob;
+    try{blob=makePdf();}catch(e){st('The PDF isn’t ready yet. Please try again in a moment.');return;}
+    if(!window.claude||!window.claude.use){plainSave(blob);return;}
+    window.claude.use('downloads').then(function(dl){
+      if(!dl){plainSave(blob);return;}
+      return dl.save({filename:'tiket-date.pdf',data:blob}).then(function(){st('PDF saved.');},function(e){st(e&&e.code==='declined'?'No problem, you can try again anytime.':'Download failed. Please try again.');});
+    },function(){plainSave(blob);});
+  });
+  var ag=$('again');if(ag)ag.addEventListener('click',function(){
+    var n=S.name;fresh();S.name=n;tries=0;no.style.transform='';no.style.display='';yes.style.width='';
+    d.value='';t.value='';t2.value='';$('msg').value='';$('mysT').textContent='Tap to peek';
+    drawParts();drawPlaces();drawDress();drawTrans();chk2();st('');go(2);
+  });
+})();
+</script>
+</body>
+</html>
