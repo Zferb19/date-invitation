@@ -155,10 +155,8 @@ button.gift{cursor:pointer}
       <p class="t-foot">From Zul ♥</p>
     </div>
     <div class="acts">
-      <p class="status">Send your receipt to Zul so he knows the plan ♥</p>
+      <p class="status">Download your receipt and send it to Zul ♥</p>
       <button class="btn" id="pdf" type="button">Download PDF</button>
-      <a class="btn ghost" id="wa" href="#" target="_blank" rel="noopener">Send on WhatsApp</a>
-      <a class="btn ghost" id="em" href="#" target="_blank" rel="noopener">Email receipt to Zul</a>
       
       <p class="status" id="st" role="status" aria-live="polite"></p>
     </div>
@@ -168,7 +166,7 @@ button.gift{cursor:pointer}
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 <script>
 (function(){
-  var HOST='Zul',GUEST='Nur Elisya Irdina binti Mohd Jamil',WA='',TO='zulfitri191007@gmail.com',MSG='';
+  var HOST='Zul',GUEST='Nur Elisya Irdina binti Mohd Jamil';
   var PARTS=[['Morning','10:00','13:00'],['Afternoon','13:00','17:00'],['Evening','17:00','20:00'],['Night','20:00','23:00']];
   var PLACES=[['☕','Café'],['📸','Photobooth'],['🎬','Movie'],['🕯️','Cipta Karya','Make your own candle & clay pieces'],['🎨','Art BnB Workshop'],['🛋️','Plan B'],['🛍️','Ipoh Stable Market'],['❄️','Sentra Ice World'],['🪞','Mirror Maze']];
   var DRESS=['Casual','Smart','Soft colours','Anything goes'];
@@ -303,41 +301,43 @@ button.gift{cursor:pointer}
     $('tP').textContent=placeStr().join(', ');$('tT').textContent=S.transport;$('tU').textContent=S.pickup;
     $('tD').textContent=S.dress||'Anything goes';
     $('tM').textContent=S.msg;$('tMr').hidden=!S.msg;
-    var m='Hi '+HOST+'! I said yes to our first date ♥\n📅 '+when()+'\n📍 '+placeStr().join(', ')+'\n👗 '+(S.dress||'Anything goes')+'\n🚗 '+S.transport+', pick-up: '+S.pickup+(S.msg?'\n💬 '+S.msg:'');
-    $('wa').href='https://wa.me/'+WA+'?text='+encodeURIComponent(m);
-    MSG='Receipt for: '+S.name+'\n\n'+m;$('em').href='mailto:'+TO+'?subject='+encodeURIComponent('Our first date receipt')+'&body='+encodeURIComponent('Receipt for: '+S.name+'\n\n'+m);
   }
   function st(x){$('st').textContent=x;}
   function clean(x){return String(x).replace(/[’‘]/g,"'").replace(/[“”]/g,'"').replace(/[^\x20-\x7E\u00A0-\u00FF]/g,'');}
 
   function makePdf(){
-    var J=window.jspdf.jsPDF,p=new J({unit:'mm',format:[100,245]}),y=18;
-    p.setFillColor(214,51,108);p.rect(0,0,100,5,'F');
-    p.setTextColor(214,51,108);p.setFont('helvetica','bold');p.setFontSize(9);p.text('ADMIT TWO',10,y);
-    p.setTextColor(59,20,80);p.setFontSize(21);p.text('Date Invitation',10,y+9);
-    p.setFillColor(214,51,108);p.circle(79,y+3,2.6,'F');p.circle(84,y+3,2.6,'F');p.triangle(76.6,y+4.2,86.4,y+4.2,81.5,y+10,'F');
-    y+=18;
-    function rule(){p.setDrawColor(226,205,234);p.setLineDashPattern([1.5,1.5],0);p.line(10,y,90,y);y+=7;}
-    rule();
-    function row(k,v){
-      p.setFont('helvetica','normal');p.setFontSize(8);p.setTextColor(138,106,155);p.text(k,10,y);y+=5;
-      p.setFont('helvetica','bold');p.setFontSize(12);p.setTextColor(59,20,80);
-      var L=p.splitTextToSize(clean(v),80);p.text(L,10,y);y+=L.length*5.4+4;
+    var J=window.jspdf.jsPDF,W=80,M=7,C=W/2,INK=[59,20,80],PINK=[214,51,108],GREY=[120,100,135];
+    function draw(p){
+      var y=12;
+      p.setFillColor(PINK[0],PINK[1],PINK[2]);p.circle(C-2.6,y+1.8,2.4,'F');p.circle(C+2.6,y+1.8,2.4,'F');p.triangle(C-4.8,y+2.8,C+4.8,y+2.8,C,y+8.4,'F');
+      y+=16;
+      p.setFont('courier','bold');p.setFontSize(15);p.setTextColor(INK[0],INK[1],INK[2]);p.text('DATE INVITATION',C,y,{align:'center'});
+      y+=6;p.setFontSize(9);p.setTextColor(PINK[0],PINK[1],PINK[2]);p.text('ADMIT TWO',C,y,{align:'center'});
+      y+=6;
+      function rule(){p.setDrawColor(160,140,170);p.setLineDashPattern([1.2,1.2],0);p.line(M,y,W-M,y);p.setLineDashPattern([],0);y+=6;}
+      function row(k,v){
+        p.setFont('courier','normal');p.setFontSize(8);p.setTextColor(GREY[0],GREY[1],GREY[2]);p.text(k.toUpperCase(),M,y);y+=4.2;
+        p.setFont('courier','bold');p.setFontSize(10);p.setTextColor(INK[0],INK[1],INK[2]);
+        var L=p.splitTextToSize(clean(v),W-2*M);p.text(L,M,y);y+=L.length*4.4+3.2;
+      }
+      rule();
+      row('For',S.name);row('When',when());row('Where',placeStr().join(', '));row('Getting there',S.transport);row('Pick-up',S.pickup);row('Dress code',S.dress||'Anything goes');row('Gifts from '+HOST,'Scarf + 1 mystery gift');
+      if(S.msg)row('Message for '+HOST,S.msg);
+      rule();
+      p.setFont('courier','bolditalic');p.setFontSize(10);p.setTextColor(123,63,160);
+      var q=p.splitTextToSize('Would you like to go on a first date with me?',W-2*M);p.text(q,C,y+1,{align:'center'});y+=q.length*4.6+4;
+      p.setFont('courier','normal');p.setFontSize(9);p.setTextColor(INK[0],INK[1],INK[2]);p.text('FROM '+HOST.toUpperCase(),C,y,{align:'center'});y+=7;
+      var sd=0,k,x=M+3,bar=true;for(k=0;k<S.name.length;k++)sd=(sd*31+S.name.charCodeAt(k))%9973;
+      p.setFillColor(INK[0],INK[1],INK[2]);
+      while(x<W-M-3){sd=(sd*1103+12345)%32768;var w=0.4+(sd%4)*0.4;if(x+w>W-M-3)break;if(bar)p.rect(x,y,w,9,'F');x+=w;bar=!bar;}
+      y+=14;
+      p.setFont('courier','normal');p.setFontSize(7);p.setTextColor(GREY[0],GREY[1],GREY[2]);p.text('THANK YOU',C,y,{align:'center'});
+      return y+8;
     }
-    row('For',S.name);row('When',when());row('Where',placeStr().join(', '));row('Getting there',S.transport);row('Pick-up',S.pickup);row('Dress code',S.dress||'Anything goes');row('Gifts from '+HOST,'Scarf + 1 mystery gift');
-    if(S.msg)row('Message for '+HOST,S.msg);
-    rule();
-    p.setFont('helvetica','bolditalic');p.setFontSize(12);p.setTextColor(123,63,160);var q=p.splitTextToSize('Would you like to go on a first date with me?',80);p.text(q,50,y+2,{align:'center'});y+=(q.length-1)*5;
-    p.setFont('helvetica','normal');p.setFontSize(9);p.setTextColor(59,20,80);p.text('From '+HOST,50,y+9,{align:'center'});
+    var h=draw(new J({unit:'mm',format:[W,400]}));
+    var p=new J({unit:'mm',format:[W,h]});draw(p);
     return p.output('blob');
   }
-  function copyTxt(t,msg){
-    var bad='Please send your receipt to '+TO+'.';
-    function fb(){try{var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();var ok=document.execCommand('copy');document.body.removeChild(a);st(ok?msg:bad);}catch(e){st(bad);}}
-    try{if(navigator.clipboard&&navigator.clipboard.writeText)navigator.clipboard.writeText(t).then(function(){st(msg);},fb);else fb();}catch(e){fb();}
-  }
-  $('em').addEventListener('click',function(){copyTxt(MSG,'Receipt text copied. If your email app didn’t open, paste it into an email to '+TO+'.');});
-  $('wa').addEventListener('click',function(){copyTxt(MSG,'Receipt text copied. If WhatsApp didn’t open, paste it into a chat with Zul.');});
   function plainSave(blob){try{var u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download='tiket-date.pdf';document.body.appendChild(a);a.click();document.body.removeChild(a);setTimeout(function(){URL.revokeObjectURL(u);},4000);st('PDF saved.');}catch(e){st('Download failed. Please try again.');}}
   $('pdf').addEventListener('click',function(){
     var blob;
